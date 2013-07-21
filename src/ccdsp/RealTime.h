@@ -10,17 +10,20 @@ struct SampleTime;
 
 struct RealTime {
   RealTime() {}
+
+  // You can construct a RealTime from any floating point number.
   RealTime(double p) : time_(p) {}
   RealTime(float p) : time_(p) {}
 
-  double operator*() const { return time_; }
+  const double operator*() const { return time_; }
 
-  // If you want to
-  // This constructor is implemented in SampleTime.h.
+  // If you want to construct a RealTime from an integer type, you also need a
+  // Sample Rate.
   RealTime(const SampleTime&, const SampleRate&);
+  // Note: this constructor is actually implemented in SampleTime.h.
 
-  RealTime& operator+=(const RealTime& t) { time_ += *t; return *this; }
-  RealTime& operator-=(const RealTime& t) { time_ -= *t; return *this; }
+  RealTime& operator+=(RealTime t) { time_ += *t; return *this; }
+  RealTime& operator-=(RealTime t) { time_ -= *t; return *this; }
 
   template <typename T> RealTime& operator+=(T t) { time_ += t; return *this; }
   template <typename T> RealTime& operator-=(T t) { time_ -= t; return *this; }
@@ -29,9 +32,7 @@ struct RealTime {
   template <typename T> RealTime& operator/=(T t) { time_ /= t; return *this; }
 
  private:
-  double time_;
-
-  // Disallow all integer constructors.
+  // Constructing a RealTime from an integer type is not allowed.
   RealTime(int8 time);
   RealTime(int16 time);
   RealTime(int32 time);
@@ -41,29 +42,41 @@ struct RealTime {
   RealTime(uint16 time);
   RealTime(uint32 time);
   RealTime(uint64 time);
+
+  double time_;
 };
 
-inline const RealTime operator+(const RealTime& x, const RealTime& y) {
-  return *x + *y;
+
+
+inline const RealTime operator+(RealTime x, RealTime y) {
+  return (*x) + (*y);
 }
 
-inline const RealTime operator-(const RealTime& x, const RealTime& y) {
-  return *x - *y;
+inline const RealTime operator-(RealTime x, RealTime y) {
+  return (*x) - (*y);
 }
 
-inline const RealTime operator*(double x, const RealTime& y) {
-  return x * (*y);
+template <typename T>
+inline const RealTime operator*(T x, RealTime y) {
+  return t * (*y);
 }
 
-inline const RealTime operator*(const RealTime& x, double y) {
+template <typename T>
+inline const RealTime operator*(RealTime x, T y) {
   return (*x) * y;
 }
 
-inline const RealTime operator/(const RealTime& x, double y) {
-  return (*x) / y;
+const RealTime operator*(RealTime x, RealTime y);
+// Disallow this case - but by causing a link error.  TODO: a better way?
+
+// Dividing a RealTime by any number gives you a RealTime.
+template <typename T>
+const RealTime operator/(RealTime x, T y) {
+  return static_cast<double>((*x) / y);
 }
 
-inline const double operator/(const RealTime& x, const RealTime& y) {
+// Dividing a RealTime by a RealTime gives you a double.
+inline const double operator/(RealTime x, RealTime y) {
   return (*x) / (*y);
 }
 

@@ -29,23 +29,7 @@ struct SampleTime {
   SampleTime& operator-=(SampleTime t) { time_ -= t; return *this; }
   SampleTime& operator+=(SampleTime t) { time_ += t; return *this; }
 
-#if 0
-  const SampleTime operator+(SampleTime t) { return time_ + t; }
-  const SampleTime operator-(SampleTime t) { return time_ - t; }
-  const SampleTime operator+(int t) { return time_ + t; }
-  const SampleTime operator+(int64 t) { return time_ + t; }
-  const SampleTime operator+(uint t) { return time_ + t; }
-  const SampleTime operator+(uint64 t) { return time_ + t; }
-  const SampleTime operator-(int t) { return time_ - t; }
-  const SampleTime operator-(int64 t) { return time_ - t; }
-  const SampleTime operator-(uint t) { return time_ - t; }
-  const SampleTime operator-(uint64 t) { return time_ - t; }
-  const SampleTime operator-() { return -time_; }
-
-  operator int64() const { return time_; }
-#endif
-
-  int64 get() { return time_; }
+  const int64 operator*() const { return time_; }
 
  private:
   // Disallow these constructors.
@@ -55,16 +39,38 @@ struct SampleTime {
   int64 time_;
 };
 
-inline const SampleTime operator+(int p, SampleTime q) { return SampleTime(p) + q; }
-inline const SampleTime operator+(int64 p, SampleTime q) { return SampleTime(p) + q; }
-inline const SampleTime operator+(uint p, SampleTime q) { return SampleTime(p) + q; }
-inline const SampleTime operator+(uint64 p, SampleTime q) { return SampleTime(p) + q; }
-inline const SampleTime operator-(int p, SampleTime q) { return SampleTime(p) - q; }
-inline const SampleTime operator-(int64 p, SampleTime q) { return SampleTime(p) - q; }
-inline const SampleTime operator-(uint p, SampleTime q) { return SampleTime(p) - q; }
-inline const SampleTime operator-(uint64 p, SampleTime q) { return SampleTime(p) - q; }
+inline const SampleTime operator+(SampleTime x, SampleTime y) {
+  return (*x) + (*y);
+}
 
-inline RealTime::RealTime(const SampleTime& t, SampleRate r) : time_(t / r) {}
+inline const SampleTime operator-(SampleTime x, SampleTime y) {
+  return (*x) - (*y);
+}
+
+template <typename T>
+inline const SampleTime operator*(T x, SampleTime y) {
+  return t * (*y);
+}
+
+template <typename T>
+inline const SampleTime operator*(SampleTime x, T y) {
+  return (*x) * y;
+}
+
+template <typename T>
+const SampleTime operator*(SampleTime x, SampleTime y);
+// Disallow this case - but by causing a link error.  TODO: a better way?
+
+// Dividing a SampleTime by a number gives you a SampleTime.
+template <typename T>
+const SampleTime operator/(SampleTime x, T y) {
+  return static_cast<int64>((*x) / y);
+}
+
+// Dividing a SampleTime by a SampleTime gives you a double.
+inline const double operator/(SampleTime x, SampleTime y) {
+  return (1.0 * (*x)) / (*y);
+}
 
 }  // namespace ccdsp
 

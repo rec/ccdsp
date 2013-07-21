@@ -9,7 +9,19 @@ struct SampleRate {
   SampleRate() {}
 
   SampleRate(double r) : rate_(r) {}
-  double operator*() const { return rate_; }
+  SampleRate(float r) : rate_(r) {}
+
+  SampleRate(int64 r) : rate_(r) {}
+  SampleRate(int32 r) : rate_(r) {}
+  SampleRate(int16 r) : rate_(r) {}
+  SampleRate(int8 r) : rate_(r) {}
+
+  SampleRate(uint64 r) : rate_(r) {}
+  SampleRate(uint32 r) : rate_(r) {}
+  SampleRate(uint16 r) : rate_(r) {}
+  SampleRate(uint8 r) : rate_(r) {}
+
+  const double operator*() const { return rate_; }
 
  private:
   const double rate_;

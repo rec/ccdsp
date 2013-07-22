@@ -27,7 +27,6 @@ struct RealTime {
 
   template <typename T> RealTime& operator+=(T t) { time_ += t; return *this; }
   template <typename T> RealTime& operator-=(T t) { time_ -= t; return *this; }
-
   template <typename T> RealTime& operator*=(T t) { time_ *= t; return *this; }
   template <typename T> RealTime& operator/=(T t) { time_ /= t; return *this; }
 
@@ -46,8 +45,6 @@ struct RealTime {
   double time_;
 };
 
-
-
 inline const RealTime operator+(RealTime x, RealTime y) {
   return (*x) + (*y);
 }
@@ -58,7 +55,7 @@ inline const RealTime operator-(RealTime x, RealTime y) {
 
 template <typename T>
 inline const RealTime operator*(T x, RealTime y) {
-  return t * (*y);
+  return x * (*y);
 }
 
 template <typename T>

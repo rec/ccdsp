@@ -24,7 +24,7 @@ struct SampleRate {
   const double operator*() const { return rate_; }
 
  private:
-  const double rate_;
+  double rate_;
 };
 
 }  // namespace ccdsp

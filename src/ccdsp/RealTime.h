@@ -23,10 +23,13 @@ struct RealTime {
   // Note: this constructor is actually implemented in SampleTime.h.
 
   RealTime& operator+=(RealTime t) { time_ += *t; return *this; }
-  RealTime& operator-=(RealTime t) { time_ -= *t; return *this; }
+  RealTime& operator+=(double t) { time_ += t; return *this; }
+  RealTime& operator+=(float t) { time_ += t; return *this; }
 
-  template <typename T> RealTime& operator+=(T t) { time_ += t; return *this; }
-  template <typename T> RealTime& operator-=(T t) { time_ -= t; return *this; }
+  RealTime& operator-=(RealTime t) { time_ -= *t; return *this; }
+  RealTime& operator-=(double t) { time_ -= t; return *this; }
+  RealTime& operator-=(float t) { time_ -= t; return *this; }
+
   template <typename T> RealTime& operator*=(T t) { time_ *= t; return *this; }
   template <typename T> RealTime& operator/=(T t) { time_ /= t; return *this; }
 
@@ -41,6 +44,9 @@ struct RealTime {
   RealTime(uint16 time);
   RealTime(uint32 time);
   RealTime(uint64 time);
+
+  template <typename T> RealTime& operator+=(T);
+  template <typename T> RealTime& operator-=(T);
 
   double time_;
 };

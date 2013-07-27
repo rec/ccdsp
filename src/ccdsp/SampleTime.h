@@ -26,6 +26,8 @@ struct SampleTime {
       : time_(static_cast<int64>((*t) * (*r))) {
   }
 
+  const int64 operator*() const { return time_; }
+
   SampleTime& operator++() { ++time_; return *this; }
   SampleTime& operator--() { --time_; return *this; }
 
@@ -35,7 +37,8 @@ struct SampleTime {
   SampleTime& operator-=(SampleTime t) { time_ -= *t; return *this; }
   SampleTime& operator+=(SampleTime t) { time_ += *t; return *this; }
 
-  const int64 operator*() const { return time_; }
+  template <typename T> SampleTime& operator*=(T t) { time_ *= t; return *this; }
+  template <typename T> SampleTime& operator/=(T t) { time_ /= t; return *this; }
 
  private:
   // Disallow floating point constructors.
